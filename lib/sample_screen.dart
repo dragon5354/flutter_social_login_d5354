@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:http/http.dart' as http;
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:flutter_social_login_d5354/login_platform.dart';
@@ -48,6 +49,22 @@ class _SampleScreenState extends State<SampleScreen> {
     }
   }
 
+  // 네이버 로그인용 코드
+  void signInWithNaver() async {
+    final NaverLoginResult result = await FlutterNaverLogin.logIn();
+
+    if (result.status == NaverLoginStatus.loggedIn) {
+      print('accessToken = ${result.accessToken}');
+      print('id = ${result.account.id}');
+      print('email = ${result.account.email}');
+      print('name = ${result.account.name}');
+
+      setState(() {
+        _loginPlatform = LoginPlatform.naver;
+      });
+    }
+  }
+
   // 로그아웃 기능
   void signOut() async {
     switch (_loginPlatform) {
@@ -80,6 +97,10 @@ class _SampleScreenState extends State<SampleScreen> {
                     _loginButton(
                       'kakao_logo',
                       signInWithKakao,
+                    ),
+                    _loginButton(
+                      'naver_logo',
+                      signInWithNaver,
                     )
                   ],
                 )),
