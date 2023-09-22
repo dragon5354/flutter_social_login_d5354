@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:flutter_social_login_d5354/login_platform.dart';
@@ -65,15 +66,32 @@ class _SampleScreenState extends State<SampleScreen> {
     }
   }
 
+  // 구글 로그인용 코드
+  void signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    if (googleUser != null) {
+      print('name = ${googleUser.displayName}');
+      print('email = ${googleUser.email}');
+      print('id = ${googleUser.id}');
+
+      setState(() {
+        _loginPlatform = LoginPlatform.google;
+      });
+    }
+  }
+
   // 로그아웃 기능
   void signOut() async {
     switch (_loginPlatform) {
       case LoginPlatform.google:
+        await UserApi.instance.logout();
         break;
       case LoginPlatform.kakao:
         await UserApi.instance.logout();
         break;
       case LoginPlatform.naver:
+        await UserApi.instance.logout();
         break;
       case LoginPlatform.none:
         break;
@@ -101,6 +119,10 @@ class _SampleScreenState extends State<SampleScreen> {
                     _loginButton(
                       'naver_logo',
                       signInWithNaver,
+                    ),
+                    _loginButton(
+                      'google_logo',
+                      signInWithGoogle,
                     )
                   ],
                 )),
